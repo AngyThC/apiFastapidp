@@ -152,20 +152,25 @@ def create_incidencia(incidencia: IncidenciaCreate):
 
 @app.get("/fotografiasincidencia/{id_incidencia}")
 def read_fotografiasincidencia(id_incidencia: int):
-    fotografias = db.query(FotografiasIncidencia).filter_by(idIncidencia=id_incidencia).all()
-    if not fotografias:
-        raise HTTPException(status_code=404, detail="No se encontraron fotografías para esta incidencia.")
-    
-    response = []
-    for fotografia in fotografias:
-        response.append({
-            "idFotografia": fotografia.idFotografia,
-            "fecha": fotografia.fecha,
-            "foto": fotografia.foto,
-            "idIncidencia": fotografia.idIncidencia
-        })
-    
-    return response
+    try:
+        fotografias = db.query(FotografiasIncidencia).filter_by(idIncidencia=id_incidencia).all()
+        if not fotografias:
+            raise HTTPException(status_code=404, detail="No se encontraron fotografías para esta incidencia.")
+        
+        response = []
+        for fotografia in fotografias:
+            response.append({
+                "idFotografiaInciden": fotografia.idFotografiaInciden,
+                "fecha": fotografia.fecha,
+                "foto": fotografia.foto,
+                "idIncidencia": fotografia.idIncidencia
+            })
+        
+        return response
+    except Exception as e:
+        # Registro del error
+        print(f"Error al obtener fotografías: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 
 @app.post("/fotografiasincidencia/create")
