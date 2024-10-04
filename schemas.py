@@ -14,11 +14,11 @@ class TipoMantenimientoCreate(BaseModel):
     nombreMantenimiento: str
 
 class MantenimientoCreate(BaseModel):
-    idTipoMantenimiento: int
-    idUbicacion: int
     comentario: str
     fecha: str
-    usuarioId: int
+    tipoId: int
+    userId: int
+    ubicacionId: int
 
 class FotografiaMantenimientoCreate(BaseModel):
     foto: bytes
@@ -31,10 +31,11 @@ class TipoIncidenciaCreate(BaseModel):
     nombreIncidencia: str
 
 class IncidenciaCreate(BaseModel):
-    idTipoIncidencia: int
     comentario: str
     fecha: str
-    usuarioId: int
+    userId: int
+    tipoIncidenciaId: int
+    ubicacionId: int
 
 class FotografiaIncidenciaCreate(BaseModel):
     foto: str  # Cambiado de bytes a str
