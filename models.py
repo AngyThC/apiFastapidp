@@ -1,59 +1,64 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, DECIMAL, BLOB
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, DECIMAL, BLOB, Float
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 class Usuarios(Base):
     __tablename__ = "usuarios"
-    usuarioID = Column(Integer, primary_key=True, autoincrement=True)
-    password = Column(String(255), nullable=False)
+    userId = Column(Integer, primary_key=True, autoincrement=True)    
+    contrasenia = Column(String(50), nullable=False)
+    user = Column(String(50), nullable=False)
 
 class Ubicaciones(Base):
     __tablename__ = "ubicaciones"
-    idUbicacion = Column(Integer, primary_key=True, autoincrement=True)
-    nombreUbicacion = Column(String(100), nullable=False)
-    descripcion = Column(Text)
-    latitud = Column(DECIMAL(10, 8))
-    longitud = Column(DECIMAL(11, 8))
+    ubicacionId = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(255), nullable=False)
+    descripcion = Column(String(255), nullable=False)
 
 class TipoMantenimiento(Base):
-    __tablename__ = "tipomantenimiento"
-    idTipoMantenimiento = Column(Integer, primary_key=True, autoincrement=True)
-    nombreMantenimiento = Column(String(100), nullable=False)
+    __tablename__ = "tipomantenimientos"
+    tipoMantenimientoId = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(255), nullable=False)
 
 class Mantenimiento(Base):
-    __tablename__ = "mantenimiento"
-    idMantenimiento = Column(Integer, primary_key=True, autoincrement=True)
-    idTipoMantenimiento = Column(Integer)
-    idUbicacion = Column(Integer)
-    comentario = Column(Text)
+    __tablename__ = "mantenimientos"
+    mantenimientoId = Column(Integer, primary_key=True, autoincrement=True)
+    comentario = Column(String(255), nullable=False)
     fecha = Column(DateTime, nullable=False)
-    usuarioId = Column(Integer)
+    tipoId = Column(Integer)
+    userId = Column(Integer)
+    ubicacionId = Column(Integer)
+    
 
 class FotografiasMantenimiento(Base):
-    __tablename__ = "fotografiasmantenimiento"
-    idFotografia = Column(Integer, primary_key=True, autoincrement=True)
-    foto = Column(BLOB)
+    __tablename__ = "fotografiamantenimientos"
+    fotoManId = Column(Integer, primary_key=True, autoincrement=True)
+    foto = Column(Text)
     fecha = Column(DateTime, nullable=False)
-    idMantenimiento = Column(Integer)
+    mantenimientoId = Column(Integer)
+    latitud = Column(Float)  # Nuevo campo
+    longitud = Column(Float)  # Nuevo campo
+
 
 class TipoIncidencia(Base):
-    __tablename__ = "tipoincidencia"
-    idTipoIncidencia = Column(Integer, primary_key=True, autoincrement=True)
-    nombreIncidencia = Column(String(100), nullable=False)
+    __tablename__ = "tipoincidencias"
+    tipoIncidenciaId = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(100), nullable=False)
 
 class Incidencias(Base):
     __tablename__ = "incidencias"
-    idIncidencia = Column(Integer, primary_key=True, autoincrement=True)
-    idTipoIncidencia = Column(Integer)
-    comentario = Column(Text)
+    incidenciaId = Column(Integer, primary_key=True, autoincrement=True)
+    comentario =  Column(String(255), nullable=False)
     fecha = Column(DateTime, nullable=False)
-    usuarioId = Column(Integer)
-
+    userId = Column(Integer)
+    tipoIncidenciaId = Column(Integer)
+    ubicacionId = Column(Integer)
+ 
 class FotografiasIncidencia(Base):
-    __tablename__ = "fotografiasincidencia"
-    idFotografiaInciden = Column(Integer, primary_key=True, autoincrement=True)
-    foto = Column(BLOB)
+    __tablename__ = "fotografiaincidencias"
+    fotoId = Column(Integer, primary_key=True, autoincrement=True)
     fecha = Column(DateTime, nullable=False)
-    idUbicacion = Column(Integer)
-    idIncidencia = Column(Integer)
+    foto = Column(Text)  # Cambiado de BLOB a Text
+    incidenciaId = Column(Integer)  # Cambiado de DECIMAL(10, 5) a Integer
+    latitud = Column(Float)
+    longitud = Column(Float)

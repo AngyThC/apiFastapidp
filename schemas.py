@@ -23,6 +23,8 @@ class FotografiaMantenimientoCreate(BaseModel):
     foto: bytes
     fecha: str
     idMantenimiento: int
+    latitud: float  # Nuevo campo
+    longitud: float  # Nuevo campo
 
 class TipoIncidenciaCreate(BaseModel):
     nombreIncidencia: str
@@ -34,7 +36,8 @@ class IncidenciaCreate(BaseModel):
     usuarioId: int
 
 class FotografiaIncidenciaCreate(BaseModel):
-    foto: bytes
-    fecha: str
-    idUbicacion: int
-    idIncidencia: int
+    foto: str  # Cambiado de bytes a str
+    fecha: str  # Puedes cambiar fecha a datetime para que FastAPI lo parse automáticamente
+    incidenciaId: int
+    latitud: float
+    longitud: float
