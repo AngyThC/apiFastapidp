@@ -6,7 +6,7 @@ Base = declarative_base()
 class Usuarios(Base):
     __tablename__ = "usuarios"
     userId = Column(Integer, primary_key=True, autoincrement=True)    
-    contrasenia = Column(String(50), nullable=False)
+    contrasenia = Column(Text, nullable=False)
     user = Column(String(50), nullable=False)
 
 class Ubicaciones(Base):

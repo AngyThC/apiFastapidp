@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from sqlalchemy.orm import sessionmaker
 from models import Base, Usuarios, Ubicaciones, TipoMantenimiento, Mantenimiento, FotografiasMantenimiento, TipoIncidencia, Incidencias, FotografiasIncidencia
 from schemas import UsuarioCreate, UbicacionCreate, TipoMantenimientoCreate, MantenimientoCreate, FotografiaMantenimientoCreate, TipoIncidenciaCreate, IncidenciaCreate, FotografiaIncidenciaCreate
@@ -7,15 +7,20 @@ from fastapi.middleware.cors import CORSMiddleware
 import base64
 from fastapi import  UploadFile, File
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
+
+app = FastAPI()
+
+#LOGIN
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 app = FastAPI()
 
 # Aquí está tu código para manejar las imágenes...
-
-
-
-app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # o especifica los dominios que deseas permitir
@@ -32,6 +37,30 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db = SessionLocal()
 
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    username = form_data.username
+    password = form_data.password
+
+    user = db.query(Usuarios).filter(Usuarios.user == username).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Usuario o contraseña incorrectos")
+
+    if not verify_password(password, user.contrasenia):
+        raise HTTPException(status_code=400, detail="Usuario o contraseña incorrectos")
+
+    return {"message": "Inicio de sesión exitoso", "userId": user.userId}
+
+# CODIGO DE IMAGENES =================================================================
+
 # Rutas para Usuarios
 @app.get("/usuarios/")
 def read_usuarios():
@@ -40,7 +69,8 @@ def read_usuarios():
 
 @app.post("/usuarios/create")
 def create_usuario(usuario: UsuarioCreate):
-    db_usuario = Usuarios(**usuario.dict())
+    hashed_password = get_password_hash(usuario.contrasenia)
+    db_usuario = Usuarios(user=usuario.user, contrasenia=hashed_password)
     db.add(db_usuario)
     db.commit()
     db.refresh(db_usuario)

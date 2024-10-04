@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 
 class UsuarioCreate(BaseModel):
-    password: str
+    user: str
+    contrasenia: str
 
 class UbicacionCreate(BaseModel):
     nombreUbicacion: str
